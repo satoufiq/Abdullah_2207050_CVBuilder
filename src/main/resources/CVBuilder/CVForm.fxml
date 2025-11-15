@@ -1,74 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.geometry.Insets?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="CVBuilder.Controllers.CVFormController">
+            fx:controller="CVBuilder.Controllers.CVFormController"
+            style="-fx-background-color: linear-gradient(to bottom right, #ffffff, #5786f4);">
+
 
     <top>
-        <HBox spacing="10">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
+        <HBox spacing="10" style="-fx-background-color:#10103c; -fx-padding:12 16; -fx-border-color:#10103c; -fx-border-width:0 0 1 0;">
+            <Label text="Create Your CV"
+                   style="-fx-font-size:22px; -fx-font-weight:900; -fx-text-fill:#ffffff;" />
 
-            <Label text="Create CV" style="-fx-font-size:20px; -fx-font-weight:700;"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button text="Back" onAction="#goBack"/>
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Button text="Back"
+                    onAction="#goBack"
+                    style="-fx-font-size:14px; -fx-background-color:#ecefff; -fx-padding:6 14; -fx-background-radius:6; -fx-font-weight:bold; -fx-text-fill:#222;" />
         </HBox>
     </top>
 
+
     <center>
-        <ScrollPane fitToWidth="true">
-            <VBox spacing="16">
-                <padding>
-                    <Insets top="20" right="20" bottom="20" left="20"/>
-                </padding>
+        <ScrollPane fitToWidth="true" style="-fx-background-color:transparent;">
+            <VBox spacing="20" style="-fx-padding:25;">
 
-                <TextField fx:id="fullNameField" promptText="Full Name"/>
-                <TextField fx:id="emailField" promptText="Email"/>
-                <TextField fx:id="phoneField" promptText="Phone"/>
-                <TextArea fx:id="addressArea" promptText="Address" prefRowCount="2"/>
 
-                <!-- Profile image -->
-                <VBox spacing="6">
-                    <ImageView fx:id="profileImageView"/>
+                <Label text="Personal Information"
+                       style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#2a2a44;" />
 
-                    <!-- MUST HAVE fx:id TO AVOID NULLPOINTER -->
+                <TextField fx:id="fullNameField" promptText="Full Name"
+                           style="-fx-background-radius:8; -fx-padding:10;" />
+
+                <TextField fx:id="emailField" promptText="Email"
+                           style="-fx-background-radius:8; -fx-padding:10;" />
+
+                <TextField fx:id="phoneField" promptText="Phone"
+                           style="-fx-background-radius:8; -fx-padding:10;" />
+
+                <TextArea fx:id="addressArea" promptText="Address"
+                          prefRowCount="2"
+                          style="-fx-background-radius:8; -fx-padding:10;" />
+
+
+                <VBox spacing="10">
+                    <Label text="Profile Photo"
+                           style="-fx-font-size:15px; -fx-font-weight:700; -fx-text-fill:#2a2a44;" />
+
+                    <ImageView fx:id="profileImageView"
+                               fitWidth="120"
+                               preserveRatio="true"
+                               style="-fx-effect: innershadow(gaussian, #b0b0d0, 12, 0.2, 0, 0);" />
+
                     <Button fx:id="uploadImageBtn"
                             text="Upload Profile Photo"
-                            onAction="#uploadImage"/>
+                            onAction="#uploadImage"
+                            style="-fx-background-color:#4052ff; -fx-text-fill:white; -fx-padding:8 18; -fx-font-weight:bold; -fx-background-radius:8;" />
                 </VBox>
 
-                <VBox spacing="8">
-                    <Label text="Education"/>
-                    <VBox fx:id="educationContainer"/>
-                    <Button text="+ Add Education" onAction="#addEducation"/>
+
+                <VBox spacing="10">
+                    <Label text="Education"
+                           style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#2a2a44;" />
+
+                    <VBox fx:id="educationContainer" spacing="6" />
+
+                    <Button text="+ Add Education"
+                            onAction="#addEducation"
+                            style="-fx-background-color:#dfe3ff; -fx-text-fill:#182052; -fx-font-weight:bold; -fx-background-radius:6;" />
                 </VBox>
 
-                <VBox spacing="8">
-                    <Label text="Skills"/>
-                    <VBox fx:id="skillsContainer"/>
-                    <Button text="+ Add Skill" onAction="#addSkill"/>
+
+                <VBox spacing="10">
+                    <Label text="Skills"
+                           style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#2a2a44;" />
+
+                    <VBox fx:id="skillsContainer" spacing="6" />
+
+                    <Button text="+ Add Skill"
+                            onAction="#addSkill"
+                            style="-fx-background-color:#dfe3ff; -fx-text-fill:#182052; -fx-font-weight:bold; -fx-background-radius:6;" />
                 </VBox>
 
-                <VBox spacing="8">
-                    <Label text="Work Experience"/>
-                    <VBox fx:id="experienceContainer"/>
-                    <Button text="+ Add Experience" onAction="#addExperience"/>
+
+                <VBox spacing="10">
+                    <Label text="Work Experience"
+                           style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#2a2a44;" />
+
+                    <VBox fx:id="experienceContainer" spacing="6" />
+
+                    <Button text="+ Add Experience"
+                            onAction="#addExperience"
+                            style="-fx-background-color:#dfe3ff; -fx-text-fill:#182052; -fx-font-weight:bold; -fx-background-radius:6;" />
                 </VBox>
 
-                <VBox spacing="8">
-                    <Label text="Projects"/>
-                    <VBox fx:id="projectsContainer"/>
-                    <Button text="+ Add Project" onAction="#addProject"/>
+
+                <VBox spacing="10">
+                    <Label text="Projects"
+                           style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#2a2a44;" />
+
+                    <VBox fx:id="projectsContainer" spacing="6" />
+
+                    <Button text="+ Add Project"
+                            onAction="#addProject"
+                            style="-fx-background-color:#dfe3ff; -fx-text-fill:#182052; -fx-font-weight:bold; -fx-background-radius:6;" />
                 </VBox>
+
 
                 <Button text="Generate CV"
                         onAction="#generateCV"
-                        styleClass="primary-button"/>
+                        style="-fx-font-size:18px;
+                               -fx-background-color:#4a57ff;
+                               -fx-text-fill:white;
+                               -fx-padding:12 24;
+                               -fx-background-radius:10;
+                               -fx-font-weight:900;
+                               -fx-cursor:hand;" />
+
             </VBox>
         </ScrollPane>
     </center>

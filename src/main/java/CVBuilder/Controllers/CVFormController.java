@@ -50,11 +50,16 @@ public class CVFormController {
         input.setPromptText(prompt);
         input.setPrefWidth(420);
 
-        if (large) ((TextArea) input).setPrefRowCount(3);
+        if (large) {
+            ((TextArea) input).setPrefRowCount(3);
+        }
 
         Button remove = new Button("X");
-        remove.setOnAction(e -> ((VBox) ((HBox) remove.getParent()).getParent())
-                .getChildren().remove(remove.getParent()));
+        remove.setOnAction(e ->
+                ((VBox) ((HBox) remove.getParent()).getParent())
+                        .getChildren()
+                        .remove(remove.getParent())
+        );
 
         HBox box = new HBox(8, input, remove);
         box.setPadding(new Insets(4));
@@ -79,11 +84,12 @@ public class CVFormController {
 
     @FXML
     private void uploadImage() {
-        FileChooser fc = new FileChooser();
-        fc.getExtensionFilters().add(
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
         );
-        File file = fc.showOpenDialog(uploadImageBtn.getScene().getWindow());
+
+        File file = chooser.showOpenDialog(uploadImageBtn.getScene().getWindow());
 
         if (file != null) {
             profileImageURI = file.toURI().toString();
@@ -108,7 +114,11 @@ public class CVFormController {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/Preview.fxml"));
             Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/CVBuilder/style.css").toExternalForm());
+
+
+            scene.getStylesheets().add(
+                    getClass().getResource("/CVBuilder/style.css").toExternalForm()
+            );
 
             PreviewController controller = loader.getController();
             controller.setCV(cv);
@@ -116,20 +126,28 @@ public class CVFormController {
             Stage stage = (Stage) fullNameField.getScene().getWindow();
             stage.setScene(scene);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
     private void collect(VBox box, java.util.List<String> list) {
         list.clear();
-        for (Node n : box.getChildren()) {
-            if (n instanceof HBox row) {
+
+        for (Node node : box.getChildren()) {
+            if (node instanceof HBox row) {
                 for (Node c : row.getChildren()) {
+
                     if (c instanceof TextField tf) {
-                        if (!tf.getText().isBlank()) list.add(tf.getText());
-                    } else if (c instanceof TextArea ta) {
-                        if (!ta.getText().isBlank()) list.add(ta.getText());
+                        if (!tf.getText().isBlank()) {
+                            list.add(tf.getText());
+                        }
+                    }
+
+                    else if (c instanceof TextArea ta) {
+                        if (!ta.getText().isBlank()) {
+                            list.add(ta.getText());
+                        }
                     }
                 }
             }
@@ -139,8 +157,14 @@ public class CVFormController {
     @FXML
     private void goBack() throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/Home.fxml"));
-        Scene sc = new Scene(loader.load());
+        Scene scene = new Scene(loader.load());
+
+
+        scene.getStylesheets().add(
+                getClass().getResource("/CVBuilder/style.css").toExternalForm()
+        );
+
         Stage stage = (Stage) fullNameField.getScene().getWindow();
-        stage.setScene(sc);
+        stage.setScene(scene);
     }
 }

@@ -38,8 +38,9 @@ public class PreviewController {
         phoneLabel.setText(cv.getPhone());
         addressLabel.setText(cv.getAddress());
 
-        if (cv.getProfileImageURI() != null)
+        if (cv.getProfileImageURI() != null) {
             profileImageView.setImage(new Image(cv.getProfileImageURI()));
+        }
 
         fill(educationBox, cv.getEducations());
         fill(skillsBox, cv.getSkills());
@@ -49,19 +50,26 @@ public class PreviewController {
 
     private void fill(VBox box, java.util.List<String> list) {
         box.getChildren().clear();
+
         for (String s : list) {
-            Label l = new Label("• " + s);
-            l.setPadding(new Insets(3));
-            l.setWrapText(true);
-            box.getChildren().add(l);
+            Label label = new Label("• " + s);
+            label.setPadding(new Insets(3));
+            label.setWrapText(true);
+            box.getChildren().add(label);
         }
     }
 
     @FXML
     private void goBack() throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/CVForm.fxml"));
-        Scene sc = new Scene(loader.load());
+        Scene scene = new Scene(loader.load());
+
+
+        scene.getStylesheets().add(
+                getClass().getResource("/CVBuilder/style.css").toExternalForm()
+        );
+
         Stage stage = (Stage) nameLabel.getScene().getWindow();
-        stage.setScene(sc);
+        stage.setScene(scene);
     }
 }
