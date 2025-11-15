@@ -8,117 +8,125 @@
 <BorderPane xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="CVBuilder.Controllers.PreviewController"
-            style="-fx-background-color: linear-gradient(to bottom right, #f7f9ff, #5786f4);">
-
+            style="-fx-background-color: linear-gradient(to bottom right, #eef2ff, #6b8dfd);">
 
     <top>
         <HBox spacing="10"
               style="-fx-background-color:#03035e;
-                     -fx-padding:14;
+                     -fx-padding:16;
                      -fx-border-color:#d5d9ff;
                      -fx-border-width:0 0 1 0;">
             <Label text="CV Preview"
-                   style="-fx-font-size:22px;
-                          -fx-font-weight:900;
-                          -fx-text-fill:#ffffff;" />
+                   style="
+                       -fx-font-size:24px;
+                       -fx-font-weight:900;
+                       -fx-text-fill:#ffffff;
+                   "/>
             <Region HBox.hgrow="ALWAYS"/>
             <Button text="Back"
                     onAction="#goBack"
-                    style="-fx-background-color:#f4efef;
-                           -fx-text-fill:#03035e;
-                           -fx-background-radius:6;
-                           -fx-padding:6 14;
-                           -fx-font-weight:bold;" />
+                    style="
+                        -fx-background-color:#f4efef;
+                        -fx-text-fill:#03035e;
+                        -fx-background-radius:6;
+                        -fx-padding:6 14;
+                        -fx-font-weight:bold;
+                        -fx-font-size:14px;
+                    "/>
         </HBox>
     </top>
 
-
     <center>
-        <HBox spacing="35" alignment="TOP_LEFT">
+        <HBox spacing="40" alignment="TOP_LEFT">
             <padding>
-                <Insets top="30" right="30" bottom="30" left="30"/>
+                <Insets top="32" right="32" bottom="32" left="32"/>
             </padding>
 
-
-            <VBox spacing="14" prefWidth="260"
-                  style="-fx-background-color:#10103c;
-                         -fx-background-radius:12;
-                         -fx-padding:20;
-                         -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.12), 10, 0, 0, 2);">
+            <VBox spacing="16" prefWidth="280"
+                  style="
+                      -fx-background-color:#11114a;
+                      -fx-background-radius:14;
+                      -fx-padding:24;
+                      -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 12, 0, 0, 2);
+                  ">
 
                 <ImageView fx:id="profileImageView"
                            fitWidth="170"
                            preserveRatio="true"
-                           style="-fx-effect: innershadow(gaussian, #b0b0d0, 12, 0.2, 0, 0);"/>
+                           style="-fx-effect: innershadow(gaussian, #b0b0d0, 10, 0.2, 0, 0);" />
 
+                <Label text="NAME:"
+                       style="-fx-font-size:15px; -fx-font-weight:900; -fx-text-fill:#d9d9fb;" />
+                <Label fx:id="nameLabel"
+                       wrapText="true"
+                       style="-fx-font-size:16px; -fx-font-weight:bold; -fx-text-fill:white;" />
 
-                <Label text="Name:"
-                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#eae1e1;" />
-                <Label fx:id="nameLabel" style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#f4efef;"/>
+                <Label text="EMAIL:"
+                       style="-fx-font-size:15px; -fx-font-weight:900; -fx-text-fill:#d9d9fb;" />
+                <Label fx:id="emailLabel"
+                       wrapText="true"
+                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:white;" />
 
+                <Label text="PHONE:"
+                       style="-fx-font-size:15px; -fx-font-weight:900; -fx-text-fill:#d9d9fb;" />
+                <Label fx:id="phoneLabel"
+                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:white;" />
 
-                <Label text="Email:"
-                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#f4efef;" />
-                <Label fx:id="emailLabel" wrapText="true" style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#f4efef;"/>
-
-
-                <Label text="Phone:"
-                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#eae1e1;" />
-                <Label fx:id="phoneLabel" style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#f4efef;"/>
-
-
-                <Label text="Address:"
-                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#f4efef;" />
+                <Label text="ADDRESS:"
+                       style="-fx-font-size:15px; -fx-font-weight:900; -fx-text-fill:#d9d9fb;" />
                 <Label fx:id="addressLabel"
                        wrapText="true"
-                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#f4efef;"/>
+                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:white;" />
             </VBox>
 
-
-            <VBox spacing="28">
-
+            <VBox spacing="30">
 
                 <VBox spacing="10">
                     <Label text="EDUCATION"
-                           style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#1b2bbf;" />
+                           style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#1026c9;" />
                     <VBox fx:id="educationBox"
-                          style="-fx-background-color:#ffffff;
-                                 -fx-padding:14;
-                                 -fx-background-radius:10;
-                                 -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.05), 6, 0, 0, 1);" />
+                          style="
+                              -fx-background-color:white;
+                              -fx-padding:16;
+                              -fx-background-radius:10;
+                              -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 1);
+                          "/>
                 </VBox>
-
 
                 <VBox spacing="10">
                     <Label text="EXPERIENCE"
-                           style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#1b2bbf;" />
+                           style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#1026c9;" />
                     <VBox fx:id="experienceBox"
-                          style="-fx-background-color:#ffffff;
-                                 -fx-padding:14;
-                                 -fx-background-radius:10;
-                                 -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.05), 6, 0, 0, 1);" />
+                          style="
+                              -fx-background-color:white;
+                              -fx-padding:16;
+                              -fx-background-radius:10;
+                              -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 1);
+                          "/>
                 </VBox>
-
 
                 <VBox spacing="10">
                     <Label text="PROJECTS"
-                           style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#1b2bbf;" />
+                           style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#1026c9;" />
                     <VBox fx:id="projectsBox"
-                          style="-fx-background-color:#ffffff;
-                                 -fx-padding:14;
-                                 -fx-background-radius:10;
-                                 -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.05), 6, 0, 0, 1);" />
+                          style="
+                              -fx-background-color:white;
+                              -fx-padding:16;
+                              -fx-background-radius:10;
+                              -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 1);
+                          "/>
                 </VBox>
-
 
                 <VBox spacing="10">
                     <Label text="SKILLS"
-                           style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#1b2bbf;" />
+                           style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#1026c9;" />
                     <VBox fx:id="skillsBox"
-                          style="-fx-background-color:#ffffff;
-                                 -fx-padding:14;
-                                 -fx-background-radius:10;
-                                 -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.05), 6, 0, 0, 1);" />
+                          style="
+                              -fx-background-color:white;
+                              -fx-padding:16;
+                              -fx-background-radius:10;
+                              -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 1);
+                          "/>
                 </VBox>
 
             </VBox>

@@ -5,34 +5,31 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="CVBuilder.Controllers.HomeController"
-            style="-fx-background-color: linear-gradient(to bottom right, #ffffff, #677cf8);">
+            style="-fx-background-color: linear-gradient(to bottom right, #f7f8ff, #6d82ff);">
 
     <center>
-        <VBox alignment="CENTER" spacing="25">
+        <VBox alignment="CENTER" spacing="28">
 
-
-            <Label text="Welcome to the CV- Builder!"
-                   style="-fx-font-size:34px;
+            <Label text="CV Builder"
+                   style="-fx-font-size:36px;
                           -fx-font-weight:900;
-                          -fx-text-fill:#10103c;" />
+                          -fx-text-fill:#0f0f3a;" />
 
+            <Label text="Create a clean, modern and professional CV"
+                   style="-fx-font-size:16px;
+                          -fx-text-fill:#1a1a33;" />
 
-            <Label text="Create a curriculum vitae"
-                   style="-fx-font-size:15px;
-                          -fx-text-fill:#0a0a13;" />
-
-
-            <HBox alignment="CENTER">
-                <Button text="Create New CV"
-                        onAction="#onCreateNewCV"
-                        style="-fx-font-size:18px;
-                               -fx-font-weight:bold;
-                               -fx-background-radius:8;
-                               -fx-padding:12 34;
-                               -fx-background-color:#4a57ff;
-                               -fx-text-fill:white;
-                               -fx-cursor:hand;" />
-            </HBox>
+            <Button text="Create New CV"
+                    onAction="#onCreateNewCV"
+                    style="
+                        -fx-font-size:18px;
+                        -fx-font-weight:bold;
+                        -fx-background-radius:10;
+                        -fx-padding:12 36;
+                        -fx-background-color:#4a57ff;
+                        -fx-text-fill:white;
+                        -fx-cursor:hand;
+                    "/>
 
         </VBox>
     </center>
