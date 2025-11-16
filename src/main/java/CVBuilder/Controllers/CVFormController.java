@@ -1,6 +1,6 @@
 package CVBuilder.Controllers;
 
-import CVBuilder.Models.CV;
+import CVBuilder.models.CV;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -10,7 +10,19 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
+//package CVBuilder.Controllers;
+
+import CVBuilder.models.CV;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -44,35 +56,51 @@ public class CVFormController {
         profileImageView.setFitWidth(120);
         profileImageView.setFitHeight(120);
         profileImageView.setPreserveRatio(true);
-
-        addLiveValidation(fullNameField);
-        addLiveValidation(emailField);
-        addLiveValidation(phoneField);
-        addLiveValidation(addressArea);
     }
 
+    public void loadCV(CV cv) {
 
-    private HBox entry(String prompt, boolean large) {
+        fullNameField.setText(cv.getFullName());
+        emailField.setText(cv.getEmail());
+        phoneField.setText(cv.getPhone());
+        addressArea.setText(cv.getAddress());
+
+        profileImageURI = cv.getProfileImageURI();
+        if (profileImageURI != null) {
+            profileImageView.setImage(new Image(profileImageURI));
+        }
+
+        educationContainer.getChildren().clear();
+        skillsContainer.getChildren().clear();
+        experienceContainer.getChildren().clear();
+        projectsContainer.getChildren().clear();
+
+        for (String s : cv.getEducations()) educationContainer.getChildren().add(entry(s, false));
+        for (String s : cv.getSkills()) skillsContainer.getChildren().add(entry(s, false));
+        for (String s : cv.getExperiences()) experienceContainer.getChildren().add(entry(s, true));
+        for (String s : cv.getProjects()) projectsContainer.getChildren().add(entry(s, true));
+
+        scrollPane.setVvalue(0);
+    }
+
+    private HBox entry(String text, boolean large) {
         TextInputControl input = large ? new TextArea() : new TextField();
-        input.setPromptText(prompt);
         input.setPrefWidth(420);
+
+        input.setText(text);
+        input.setPromptText(text);
 
         if (large) ((TextArea) input).setPrefRowCount(3);
 
-        addLiveValidation(input);
-
         Button remove = new Button("X");
-        remove.setOnAction(e ->
-                ((VBox) ((HBox) remove.getParent()).getParent())
-                        .getChildren()
-                        .remove(remove.getParent())
-        );
+        remove.setOnAction(e -> ((VBox) ((HBox) remove.getParent()).getParent())
+                .getChildren()
+                .remove(remove.getParent()));
 
         HBox box = new HBox(8, input, remove);
         box.setPadding(new Insets(4));
         return box;
     }
-
 
     @FXML private void addEducation(javafx.event.ActionEvent e) {
         educationContainer.getChildren().add(entry("Degree - Institute - Year", false));
@@ -90,106 +118,30 @@ public class CVFormController {
         projectsContainer.getChildren().add(entry("Project - Description", true));
     }
 
-
-
     @FXML
     private void uploadImage() {
         FileChooser chooser = new FileChooser();
-        chooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
-        );
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
 
         File file = chooser.showOpenDialog(uploadImageBtn.getScene().getWindow());
-
         if (file != null) {
             profileImageURI = file.toURI().toString();
             profileImageView.setImage(new Image(profileImageURI));
         }
     }
 
-
-
     private boolean validateForm() {
-        StringBuilder errors = new StringBuilder();
-        Node firstInvalidNode = null;
-
-
-        firstInvalidNode = checkField(fullNameField, "Full Name", errors, firstInvalidNode);
-        firstInvalidNode = checkField(emailField, "Email", errors, firstInvalidNode);
-        firstInvalidNode = checkField(phoneField, "Phone", errors, firstInvalidNode);
-        firstInvalidNode = checkField(addressArea, "Address", errors, firstInvalidNode);
-
-
-        if (profileImageURI == null) {
-            errors.append("• Profile Photo is required.\n");
-            if (firstInvalidNode == null) firstInvalidNode = profileImageView;
-        }
-
-
-        firstInvalidNode = validateContainer(educationContainer, "Education", errors, firstInvalidNode);
-        firstInvalidNode = validateContainer(skillsContainer, "Skills", errors, firstInvalidNode);
-        firstInvalidNode = validateContainer(experienceContainer, "Experience", errors, firstInvalidNode);
-        firstInvalidNode = validateContainer(projectsContainer, "Projects", errors, firstInvalidNode);
-
-
-        if (!errors.toString().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Invalid Form");
-            alert.setHeaderText("Please fix the following issues:");
-            alert.setContentText(errors.toString());
-            alert.show();
-
-            if (firstInvalidNode != null)
-                scrollTo(firstInvalidNode);
-
+        if (fullNameField.getText().isBlank()
+                || emailField.getText().isBlank()
+                || phoneField.getText().isBlank()
+                || addressArea.getText().isBlank()
+                || profileImageURI == null
+        ) {
+            new Alert(Alert.AlertType.ERROR, "Please fill all required fields.").show();
             return false;
         }
-
         return true;
     }
-
-    private Node checkField(TextInputControl field, String name, StringBuilder errors, Node firstInvalidNode) {
-        if (field.getText().isBlank()) {
-            errors.append("• ").append(name).append(" is required.\n");
-            markInvalid(field);
-            return (firstInvalidNode == null ? field : firstInvalidNode);
-        }
-        markValid(field);
-        return firstInvalidNode;
-    }
-
-    private Node validateContainer(VBox box, String name, StringBuilder errors, Node firstInvalidNode) {
-        if (box.getChildren().isEmpty()) {
-            errors.append("• At least one ").append(name).append(" entry is required.\n");
-            return (firstInvalidNode == null ? box : firstInvalidNode);
-        }
-        return firstInvalidNode;
-    }
-
-
-
-    private void addLiveValidation(TextInputControl input) {
-        input.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal.isBlank()) markInvalid(input);
-            else markValid(input);
-        });
-    }
-
-    private void markInvalid(Node node) {
-        node.setStyle("-fx-border-color: #ff4d4d; -fx-border-width: 2;");
-    }
-
-    private void markValid(Node node) {
-        node.setStyle("");
-    }
-
-    private void scrollTo(Node node) {
-        scrollPane.layout();
-        double y = node.getBoundsInParent().getMinY();
-        scrollPane.setVvalue(y / scrollPane.getContent().getBoundsInLocal().getHeight());
-    }
-
-
 
     @FXML
     private void generateCV() {
@@ -210,7 +162,6 @@ public class CVFormController {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/Preview.fxml"));
             Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/CVBuilder/style.css").toExternalForm());
 
             PreviewController controller = loader.getController();
             controller.setCV(cv);
@@ -223,11 +174,8 @@ public class CVFormController {
         }
     }
 
-
-
     private void collect(VBox box, java.util.List<String> list) {
         list.clear();
-
         for (Node node : box.getChildren()) {
             if (node instanceof HBox row) {
                 for (Node c : row.getChildren()) {
@@ -240,14 +188,10 @@ public class CVFormController {
         }
     }
 
-
-
     @FXML
     private void goBack() throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/Home.fxml"));
         Scene scene = new Scene(loader.load());
-        scene.getStylesheets().add(getClass().getResource("/CVBuilder/style.css").toExternalForm());
-
         Stage stage = (Stage) fullNameField.getScene().getWindow();
         stage.setScene(scene);
     }

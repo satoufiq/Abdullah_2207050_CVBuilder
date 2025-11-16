@@ -1,6 +1,6 @@
 package CVBuilder.Controllers;
 
-import CVBuilder.Models.CV;
+import CVBuilder.models.CV;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -50,7 +50,6 @@ public class PreviewController {
 
     private void fill(VBox box, java.util.List<String> list) {
         box.getChildren().clear();
-
         for (String s : list) {
             Label label = new Label("• " + s);
             label.setPadding(new Insets(3));
@@ -59,15 +58,18 @@ public class PreviewController {
         }
     }
 
+    // ---> New Edit feature
     @FXML
-    private void goBack() throws Exception {
+    private void editCV() throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/CVForm.fxml"));
         Scene scene = new Scene(loader.load());
-
 
         scene.getStylesheets().add(
                 getClass().getResource("/CVBuilder/style.css").toExternalForm()
         );
+
+        CVFormController controller = loader.getController();
+        controller.loadCV(cv);
 
         Stage stage = (Stage) nameLabel.getScene().getWindow();
         stage.setScene(scene);

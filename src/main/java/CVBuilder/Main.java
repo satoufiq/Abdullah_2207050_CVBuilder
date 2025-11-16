@@ -20,7 +20,6 @@ public class Main extends Application {
         try {
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/CVBuilder/icon.png")));
         } catch (Exception ignored) {}
-
         stage.setWidth(900);
         stage.setHeight(650);
         stage.show();
