@@ -7,7 +7,7 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="CVBuilder.Controllers.CVFormController"
-            style="-fx-background-color: linear-gradient(to bottom right, #f4f5fa, #4468c5);">
+            style="-fx-background-color: #b2c6f3;">
 
 
     <top>
