@@ -37,7 +37,7 @@
 
     <center>
         <ScrollPane fitToWidth="true"
-                    style="-fx-background-color:transparent;"
+                    style="-fx-background-color:#b2c6f3;"
                     pannable="true"
                     hbarPolicy="NEVER"
                     vbarPolicy="AS_NEEDED">

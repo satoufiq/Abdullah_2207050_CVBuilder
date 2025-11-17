@@ -35,7 +35,7 @@ public class HomeController {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
-            stage.setTitle("Create CV");
+            stage.setTitle("Create CV");// new scene title for cvform.fxml
 
             System.out.println(">>> Scene switched to CVForm.fxml");
 

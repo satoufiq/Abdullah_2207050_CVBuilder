@@ -6,45 +6,41 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="CVBuilder.Controllers.HomeController"
-            style="-fx-background-color: linear-gradient(to bottom right, #4468c5, #10103c);">
+            style="-fx-background-color: linear-gradient(to bottom right, #3f5bbb, #0b0b2f);">
 
     <center>
-        <VBox alignment="CENTER" spacing="35">
+        <VBox alignment="CENTER" spacing="38">
 
-
-            <Label text="The CV Builder "
-                   style="-fx-font-size:40px;
+            <Label text="The CV Builder"
+                   style="-fx-font-size:42px;
                           -fx-font-weight:900;
-                          -fx-text-fill:#eef1ff;" />
+                          -fx-text-fill:#f4f6ff;" />
 
+            <Label text="Create a clean and modern CV"
+                   style="-fx-font-size:18px;
+                          -fx-font-weight:500;
+                          -fx-text-fill:#cdd3ff;" />
 
-            <Label text="Create a clean and modern  CV"
-                   style="-fx-font-size:17px;
-                          -fx-text-fill:#4468c5;" />
-
-
-            <VBox spacing="25" alignment="CENTER"
-                  style="-fx-background-color: white;
-                         -fx-padding:28 42;
-                         -fx-background-radius:14;
-                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 14, 0, 0, 3);">
+            <VBox spacing="28" alignment="CENTER"
+                  style="-fx-background-color:white;
+                         -fx-padding:32 48;
+                         -fx-background-radius:16;
+                         -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.18), 16, 0, 0, 3);">
 
                 <Label text="Start building your CV"
-                       style="-fx-font-size:20px;
-                              -fx-font-weight:700;
+                       style="-fx-font-size:22px;
+                              -fx-font-weight:800;
                               -fx-text-fill:#1a1a33;" />
 
                 <Button text="Create New CV"
                         onAction="#onCreateNewCV"
-                        style="
-                            -fx-font-size:18px;
-                            -fx-font-weight:bold;
-                            -fx-background-radius:10;
-                            -fx-padding:12 40;
-                            -fx-background-color:#4a57ff;
-                            -fx-text-fill:white;
-                            -fx-cursor:hand;
-                        "/>
+                        style="-fx-font-size:18px;
+                               -fx-font-weight:bold;
+                               -fx-background-radius:10;
+                               -fx-padding:12 42;
+                               -fx-background-color:#4a57ff;
+                               -fx-text-fill:white;
+                               -fx-cursor:hand;" />
             </VBox>
 
         </VBox>

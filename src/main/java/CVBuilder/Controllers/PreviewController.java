@@ -58,7 +58,6 @@ public class PreviewController {
         }
     }
 
-    // ---> New Edit feature
     @FXML
     private void editCV() throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/CVForm.fxml"));
