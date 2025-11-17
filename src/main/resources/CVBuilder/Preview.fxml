@@ -8,7 +8,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="CVBuilder.Controllers.PreviewController"
-            style="-fx-background-color: linear-gradient(to bottom right, #eef2ff, #6b8dfd);">
+            style="-fx-background-color: #d5d9ff;">
 
     <top>
         <HBox spacing="10"

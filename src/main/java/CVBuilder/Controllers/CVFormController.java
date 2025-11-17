@@ -61,10 +61,17 @@ public class CVFormController {
         experienceContainer.getChildren().clear();
         projectsContainer.getChildren().clear();
 
-        for (String s : cv.getEducations()) educationContainer.getChildren().add(entry(s, false, "Degree - Institute - Year"));
-        for (String s : cv.getSkills()) skillsContainer.getChildren().add(entry(s, false, "Skill (e.g., Java)"));
-        for (String s : cv.getExperiences()) experienceContainer.getChildren().add(entry(s, true, "Job Title - Company - Duration"));
-        for (String s : cv.getProjects()) projectsContainer.getChildren().add(entry(s, true, "Project - Description"));
+        for (String s : cv.getEducations())
+            educationContainer.getChildren().add(entry(s, false, "Degree - Institute - Year"));
+
+        for (String s : cv.getSkills())
+            skillsContainer.getChildren().add(entry(s, false, "Skill (e.g., Java)"));
+
+        for (String s : cv.getExperiences())
+            experienceContainer.getChildren().add(entry(s, true, "Job Title - Company - Duration"));
+
+        for (String s : cv.getProjects())
+            projectsContainer.getChildren().add(entry(s, true, "Project - Description"));
 
         scrollPane.setVvalue(0);
     }
@@ -125,9 +132,10 @@ public class CVFormController {
     private boolean validateForm() {
         boolean valid = true;
 
-        valid &= validateField(fullNameField);
-        valid &= validateField(emailField);
-        valid &= validateField(phoneField);
+        valid &= validateName();
+        valid &= validateEmail();
+        valid &= validatePhone();
+
         valid &= validateField(addressArea);
 
         valid &= validateList(educationContainer);
@@ -136,15 +144,36 @@ public class CVFormController {
         valid &= validateList(projectsContainer);
 
         if (!valid) {
-            new Alert(Alert.AlertType.ERROR, "Please fill all required fields.").show();
+            new Alert(Alert.AlertType.ERROR, "Invalid input! Please correct the highlighted fields.").show();
         }
 
         return valid;
     }
 
+    private boolean validateName() {
+        String text = fullNameField.getText();
+        boolean ok = text.matches("[A-Za-z ]+");
+        fullNameField.setStyle(ok ? "" : "-fx-border-color:red; -fx-border-width:2;");
+        return ok;
+    }
+
+    private boolean validateEmail() {
+        String text = emailField.getText();
+        boolean ok = text.contains("@") && text.length() >= 5;
+        emailField.setStyle(ok ? "" : "-fx-border-color:red; -fx-border-width:2;");
+        return ok;
+    }
+
+    private boolean validatePhone() {
+        String text = phoneField.getText();
+        boolean ok = text.matches("[0-9]+");
+        phoneField.setStyle(ok ? "" : "-fx-border-color:red; -fx-border-width:2;");
+        return ok;
+    }
+
     private boolean validateField(TextInputControl field) {
         boolean ok = !field.getText().isBlank();
-        field.setStyle(ok ? "" : "-fx-border-color: red; -fx-border-width: 2;");
+        field.setStyle(ok ? "" : "-fx-border-color:red; -fx-border-width:2;");
         return ok;
     }
 
@@ -155,7 +184,7 @@ public class CVFormController {
             if (n instanceof HBox hbox) {
                 TextInputControl input = (TextInputControl) hbox.getChildren().get(0);
                 boolean ok = !input.getText().isBlank();
-                input.setStyle(ok ? "" : "-fx-border-color: red; -fx-border-width: 2;");
+                input.setStyle(ok ? "" : "-fx-border-color:red; -fx-border-width:2;");
                 allOk &= ok;
             }
         }
@@ -179,6 +208,9 @@ public class CVFormController {
             collect(skillsContainer, cv.getSkills());
             collect(experienceContainer, cv.getExperiences());
             collect(projectsContainer, cv.getProjects());
+
+            Alert success = new Alert(Alert.AlertType.INFORMATION, "Saved Successfully!");
+            success.show();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/Preview.fxml"));
             Scene scene = new Scene(loader.load());
