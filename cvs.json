@@ -1,0 +1,23 @@
+[ {
+  "id" : 5,
+  "fullName" : "Md Toufiq Hasan Nibir",
+  "email" : "hasan2207049@stud.kuet.ac.bd",
+  "phone" : "0170000000",
+  "address" : "Kushtia, Khulna",
+  "profileImageURI" : "file:/C:/Users/shahr/Downloads/images.png",
+  "educations" : [ "HSc-2022", "SSC-2020" ],
+  "skills" : [ "Java" ],
+  "experiences" : [ "N/A" ],
+  "projects" : [ "N/A...." ]
+}, {
+  "id" : 4,
+  "fullName" : "Shahriar Abdullah",
+  "email" : "abdullah2207050@stud.kuet.ac.bd",
+  "phone" : "01600000000",
+  "address" : "KUET, Fulbari gate, Khulna.",
+  "profileImageURI" : "file:/C:/Users/shahr/Downloads/1000051967%20(1).jpg",
+  "educations" : [ "HSC- Govt. Syed Hatem Ali College - 2022", "SSC -Rupatoli Givt. Secondary School-2020" ],
+  "skills" : [ "Java", "C++" ],
+  "experiences" : [ "N/A" ],
+  "projects" : [ "Micro Computer - Computer Architechture", "CVBuilder - Advanced programming" ]
+} ]

@@ -1,6 +1,8 @@
 package CVBuilder.Controllers;
 
 import CVBuilder.db.CVDao;
+import CVBuilder.db.CVRepository;
+import CVBuilder.db.JsonRepository;
 import CVBuilder.models.CV;
 
 import javafx.fxml.FXML;
@@ -51,8 +53,6 @@ public class CVFormController {
         profileImageView.setPreserveRatio(true);
     }
 
-    // ------------------- LOAD EXISTING CV ---------------------
-
     public void loadCV(CV cv) {
         this.currentCV = cv;
 
@@ -85,8 +85,6 @@ public class CVFormController {
         scrollPane.setVvalue(0);
     }
 
-    // ------------------- ENTRY COMPONENT ----------------------
-
     private HBox entry(String text, boolean large, String prompt) {
 
         TextInputControl input = large ? new TextArea() : new TextField();
@@ -111,8 +109,6 @@ public class CVFormController {
         return box;
     }
 
-    // ---------------------- ADD ROWS --------------------------
-
     @FXML
     private void addEducation(javafx.event.ActionEvent e) {
         educationContainer.getChildren().add(entry("", false, "Degree - Institute - Year"));
@@ -133,8 +129,6 @@ public class CVFormController {
         projectsContainer.getChildren().add(entry("", true, "Project - Description"));
     }
 
-    // --------------------- IMAGE UPLOAD ------------------------
-
     @FXML
     private void uploadImage() {
         FileChooser chooser = new FileChooser();
@@ -147,8 +141,6 @@ public class CVFormController {
             profileImageView.setImage(new Image(profileImageURI));
         }
     }
-
-    // --------------------- VALIDATION --------------------------
 
     private boolean validateForm() {
         boolean valid = true;
@@ -194,20 +186,18 @@ public class CVFormController {
     }
 
     private boolean validateList(VBox box) {
-        boolean allOk = true;
+        boolean valid = true;
 
-        for (Node n : box.getChildren()) {
-            if (n instanceof HBox hbox) {
+        for (Node node : box.getChildren()) {
+            if (node instanceof HBox hbox) {
                 TextInputControl input = (TextInputControl) hbox.getChildren().get(0);
                 boolean ok = !input.getText().isBlank();
                 input.setStyle(ok ? "" : "-fx-border-color:red; -fx-border-width:2;");
-                allOk &= ok;
+                valid &= ok;
             }
         }
-        return allOk;
+        return valid;
     }
-
-    // --------------------- SAVE + PREVIEW ----------------------
 
     @FXML
     private void generateCV() {
@@ -227,10 +217,16 @@ public class CVFormController {
             collect(experienceContainer, cv.getExperiences());
             collect(projectsContainer, cv.getProjects());
 
-            if (cv.getId() == 0)
+            if (cv.getId() == 0) {
                 cvDao.insert(cv);
-            else
+                CVRepository.add(cv);
+            } else {
                 cvDao.update(cv);
+                CVRepository.update(cv);
+            }
+
+
+            JsonRepository.saveAll(CVRepository.getList());
 
             new Alert(Alert.AlertType.INFORMATION, "CV saved successfully!").show();
 
