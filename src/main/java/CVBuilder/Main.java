@@ -5,11 +5,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import CVBuilder.db.DBUtil;
+
 
 public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        DBUtil.getInstance();
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/Home.fxml"));
         Scene scene = new Scene(loader.load());
         scene.getStylesheets().add(getClass().getResource("/CVBuilder/style.css").toExternalForm());

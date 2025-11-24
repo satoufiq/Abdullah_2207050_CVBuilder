@@ -24,6 +24,24 @@
 
             <Region HBox.hgrow="ALWAYS"/>
 
+            <Button text="Home"
+                    onAction="#goHome"
+                    style="-fx-background-color:#ffffff;
+                           -fx-text-fill:#03035e;
+                           -fx-background-radius:6;
+                           -fx-padding:6 14;
+                           -fx-font-weight:bold;
+                           -fx-font-size:14px;"/>
+
+            <Button text="Saved CVs"
+                    onAction="#goSavedCVs"
+                    style="-fx-background-color:#ffffff;
+                           -fx-text-fill:#03035e;
+                           -fx-background-radius:6;
+                           -fx-padding:6 14;
+                           -fx-font-weight:bold;
+                           -fx-font-size:14px;"/>
+
             <Button text="Edit"
                     onAction="#editCV"
                     style="-fx-background-color:#f4efef;
@@ -37,21 +55,26 @@
 
     <center>
         <ScrollPane fitToWidth="true"
-                    style="-fx-background-color:#b2c6f3;"
+                    style="-fx-background-color:#d5d9ff;"
                     pannable="true"
                     hbarPolicy="NEVER"
                     vbarPolicy="AS_NEEDED">
 
-            <HBox spacing="40" alignment="TOP_LEFT">
+            <HBox spacing="40" alignment="TOP_LEFT" BorderPane.alignment="TOP_LEFT"
+                  prefWidth="-1"
+                  HBox.hgrow="ALWAYS">
+
                 <padding>
                     <Insets top="32" right="32" bottom="32" left="32"/>
                 </padding>
 
-                <VBox spacing="16" prefWidth="280"
+                <!-- LEFT SIDEBAR PANEL -->
+                <VBox spacing="16"
+                      maxWidth="300"
                       style="-fx-background-color:#11114a;
-                         -fx-background-radius:14;
-                         -fx-padding:24;
-                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 12, 0, 0, 2);">
+                             -fx-background-radius:14;
+                             -fx-padding:24;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 12, 0, 0, 2);">
 
                     <ImageView fx:id="profileImageView"
                                fitWidth="170"
@@ -60,14 +83,12 @@
 
                     <Label text="NAME:"
                            style="-fx-font-size:15px; -fx-font-weight:900; -fx-text-fill:#798df4;" />
-                    <Label fx:id="nameLabel"
-                           wrapText="true"
+                    <Label fx:id="nameLabel" wrapText="true"
                            style="-fx-font-size:16px; -fx-font-weight:bold; -fx-text-fill:white;" />
 
                     <Label text="EMAIL:"
                            style="-fx-font-size:15px; -fx-font-weight:900; -fx-text-fill:#798df4;" />
-                    <Label fx:id="emailLabel"
-                           wrapText="true"
+                    <Label fx:id="emailLabel" wrapText="true"
                            style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:white;" />
 
                     <Label text="PHONE:"
@@ -77,21 +98,21 @@
 
                     <Label text="ADDRESS:"
                            style="-fx-font-size:15px; -fx-font-weight:900; -fx-text-fill:#798df4;" />
-                    <Label fx:id="addressLabel"
-                           wrapText="true"
+                    <Label fx:id="addressLabel" wrapText="true"
                            style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:white;" />
                 </VBox>
 
-                <VBox spacing="30">
+                <!-- RIGHT CONTENT -->
+                <VBox spacing="30" HBox.hgrow="ALWAYS">
 
                     <VBox spacing="10">
                         <Label text="EDUCATION"
                                style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#1026c9;" />
                         <VBox fx:id="educationBox"
                               style="-fx-background-color:#798df4;
-                                 -fx-padding:16;
-                                 -fx-background-radius:10;
-                                 -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 1);" />
+                                     -fx-padding:16;
+                                     -fx-background-radius:10;
+                                     -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 1);" />
                     </VBox>
 
                     <VBox spacing="10">
@@ -99,9 +120,9 @@
                                style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#1026c9;" />
                         <VBox fx:id="experienceBox"
                               style="-fx-background-color:#798df4;
-                                 -fx-padding:16;
-                                 -fx-background-radius:10;
-                                 -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 1);" />
+                                     -fx-padding:16;
+                                     -fx-background-radius:10;
+                                     -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 1);" />
                     </VBox>
 
                     <VBox spacing="10">
@@ -109,9 +130,9 @@
                                style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#1026c9;" />
                         <VBox fx:id="projectsBox"
                               style="-fx-background-color:#798df4;
-                                 -fx-padding:16;
-                                 -fx-background-radius:10;
-                                 -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 1);" />
+                                     -fx-padding:16;
+                                     -fx-background-radius:10;
+                                     -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 1);" />
                     </VBox>
 
                     <VBox spacing="10">
@@ -119,9 +140,9 @@
                                style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#1026c9;" />
                         <VBox fx:id="skillsBox"
                               style="-fx-background-color:#798df4;
-                                 -fx-padding:16;
-                                 -fx-background-radius:10;
-                                 -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 1);" />
+                                     -fx-padding:16;
+                                     -fx-background-radius:10;
+                                     -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 1);" />
                     </VBox>
 
                 </VBox>

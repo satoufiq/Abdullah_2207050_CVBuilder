@@ -11,6 +11,21 @@ import java.net.URL;
 public class HomeController {
 
     @FXML
+    private void onViewSavedCVs(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/SavedCVs.fxml"));
+            Scene scene = new Scene(loader.load());
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Saved CVs");
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
     private void onCreateNewCV(ActionEvent event) {
         System.out.println(">>> onCreateNewCV invoked");
 

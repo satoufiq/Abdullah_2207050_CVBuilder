@@ -1,6 +1,8 @@
 package CVBuilder.Controllers;
 
+import CVBuilder.db.CVDao;
 import CVBuilder.models.CV;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -26,21 +28,36 @@ public class PreviewController {
     @FXML private VBox projectsBox;
 
     private CV cv;
+    private final CVDao dao = new CVDao();
 
+    /**
+     * Sets CV from Form or SavedCVs list
+     * Always fetch fresh from DB to avoid stale data.
+     */
     public void setCV(CV cv) {
-        this.cv = cv;
+        try {
+            if (cv.getId() != 0)
+                this.cv = dao.findById(cv.getId());
+            else
+                this.cv = cv;  // Should never happen unless misused
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.cv = cv;
+        }
+
         load();
     }
 
+    /** Load values into preview UI */
     private void load() {
         nameLabel.setText(cv.getFullName());
         emailLabel.setText(cv.getEmail());
         phoneLabel.setText(cv.getPhone());
         addressLabel.setText(cv.getAddress());
 
-        if (cv.getProfileImageURI() != null) {
+        if (cv.getProfileImageURI() != null)
             profileImageView.setImage(new Image(cv.getProfileImageURI()));
-        }
 
         fill(educationBox, cv.getEducations());
         fill(skillsBox, cv.getSkills());
@@ -58,18 +75,33 @@ public class PreviewController {
         }
     }
 
+    /** Open CVForm with loaded CV */
     @FXML
     private void editCV() throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/CVForm.fxml"));
         Scene scene = new Scene(loader.load());
 
-        scene.getStylesheets().add(
-                getClass().getResource("/CVBuilder/style.css").toExternalForm()
-        );
-
         CVFormController controller = loader.getController();
         controller.loadCV(cv);
 
+        Stage stage = (Stage) nameLabel.getScene().getWindow();
+        stage.setScene(scene);
+    }
+
+    /** Go to Home screen */
+    @FXML
+    private void goHome() throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/Home.fxml"));
+        Scene scene = new Scene(loader.load());
+        Stage stage = (Stage) nameLabel.getScene().getWindow();
+        stage.setScene(scene);
+    }
+
+    /** Go to Saved CVs screen */
+    @FXML
+    private void goSavedCVs() throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/SavedCVs.fxml"));
+        Scene scene = new Scene(loader.load());
         Stage stage = (Stage) nameLabel.getScene().getWindow();
         stage.setScene(scene);
     }

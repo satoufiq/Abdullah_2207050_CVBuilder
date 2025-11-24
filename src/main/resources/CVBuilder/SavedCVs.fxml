@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="CVBuilder.Controllers.SavedCVsController"
+            style="-fx-background-color: linear-gradient(to bottom right, #4468c5, #10103c);">
+
+    <!-- TOP BAR -->
+    <top>
+        <HBox spacing="10"
+              alignment="CENTER_LEFT"
+              style="-fx-background-color:#10103c;
+                     -fx-padding:14 20;
+                     -fx-border-color:#00000033;
+                     -fx-border-width:0 0 1 0;">
+
+            <Label text="Saved CVs"
+                   style="-fx-font-size:22px;
+                          -fx-font-weight:900;
+                          -fx-text-fill:white;"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button text="New CV"
+                    onAction="#openNewForm"
+                    style="-fx-background-color:#4a57ff;
+                           -fx-text-fill:white;
+                           -fx-padding:8 18;
+                           -fx-background-radius:8;
+                           -fx-font-weight:bold;
+                           -fx-cursor:hand;"/>
+        </HBox>
+    </top>
+
+
+    <!-- CENTER TABLE CONTAINER -->
+    <center>
+        <VBox alignment="TOP_CENTER"
+              spacing="25"
+              style="-fx-padding:30;">
+
+            <VBox maxWidth="900"
+                  spacing="10"
+                  style="-fx-background-color:white;
+                         -fx-padding:25;
+                         -fx-background-radius:14;
+                         -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.18), 16, 0, 0, 3);">
+
+                <TableView fx:id="table"
+                           prefWidth="900"
+                           style="-fx-background-radius:10;
+                                  -fx-border-radius:10;
+                                  -fx-selection-bar:#4a57ff;
+                                  -fx-selection-bar-text:white;">
+
+                    <columns>
+                        <TableColumn fx:id="idCol" text="ID" prefWidth="60"/>
+                        <TableColumn fx:id="nameCol" text="Name" prefWidth="220"/>
+                        <TableColumn fx:id="emailCol" text="Email" prefWidth="200"/>
+                        <TableColumn fx:id="phoneCol" text="Phone" prefWidth="150"/>
+                        <TableColumn fx:id="actionsCol" text="Actions" prefWidth="240"/>
+                    </columns>
+
+                </TableView>
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

@@ -1,6 +1,8 @@
 package CVBuilder.Controllers;
 
+import CVBuilder.db.CVDao;
 import CVBuilder.models.CV;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -13,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import java.io.File;
 
 public class CVFormController {
@@ -32,6 +35,9 @@ public class CVFormController {
     @FXML private ScrollPane scrollPane;
 
     private String profileImageURI;
+    private CV currentCV = null;
+
+    private final CVDao cvDao = new CVDao();
 
     @FXML
     public void initialize() {
@@ -45,16 +51,19 @@ public class CVFormController {
         profileImageView.setPreserveRatio(true);
     }
 
+    // ------------------- LOAD EXISTING CV ---------------------
+
     public void loadCV(CV cv) {
+        this.currentCV = cv;
+
         fullNameField.setText(cv.getFullName());
         emailField.setText(cv.getEmail());
         phoneField.setText(cv.getPhone());
         addressArea.setText(cv.getAddress());
-
         profileImageURI = cv.getProfileImageURI();
-        if (profileImageURI != null) {
+
+        if (profileImageURI != null)
             profileImageView.setImage(new Image(profileImageURI));
-        }
 
         educationContainer.getChildren().clear();
         skillsContainer.getChildren().clear();
@@ -76,23 +85,25 @@ public class CVFormController {
         scrollPane.setVvalue(0);
     }
 
+    // ------------------- ENTRY COMPONENT ----------------------
+
     private HBox entry(String text, boolean large, String prompt) {
+
         TextInputControl input = large ? new TextArea() : new TextField();
         input.setPrefWidth(420);
 
-        if (text == null || text.isBlank()) {
+        if (text == null || text.isBlank())
             input.setPromptText(prompt);
-        } else {
+        else
             input.setText(text);
-        }
 
-        if (large) ((TextArea) input).setPrefRowCount(3);
+        if (large)
+            ((TextArea) input).setPrefRowCount(3);
 
         Button remove = new Button("X");
         remove.setOnAction(e ->
-                ((VBox) ((HBox) remove.getParent()).getParent())
-                        .getChildren()
-                        .remove(remove.getParent())
+                ((VBox)((HBox) remove.getParent()).getParent())
+                        .getChildren().remove(remove.getParent())
         );
 
         HBox box = new HBox(8, input, remove);
@@ -100,21 +111,29 @@ public class CVFormController {
         return box;
     }
 
-    @FXML private void addEducation(javafx.event.ActionEvent e) {
+    // ---------------------- ADD ROWS --------------------------
+
+    @FXML
+    private void addEducation(javafx.event.ActionEvent e) {
         educationContainer.getChildren().add(entry("", false, "Degree - Institute - Year"));
     }
 
-    @FXML private void addSkill(javafx.event.ActionEvent e) {
+    @FXML
+    private void addSkill(javafx.event.ActionEvent e) {
         skillsContainer.getChildren().add(entry("", false, "Skill (e.g., Java)"));
     }
 
-    @FXML private void addExperience(javafx.event.ActionEvent e) {
+    @FXML
+    private void addExperience(javafx.event.ActionEvent e) {
         experienceContainer.getChildren().add(entry("", true, "Job Title - Company - Duration"));
     }
 
-    @FXML private void addProject(javafx.event.ActionEvent e) {
+    @FXML
+    private void addProject(javafx.event.ActionEvent e) {
         projectsContainer.getChildren().add(entry("", true, "Project - Description"));
     }
+
+    // --------------------- IMAGE UPLOAD ------------------------
 
     @FXML
     private void uploadImage() {
@@ -129,13 +148,14 @@ public class CVFormController {
         }
     }
 
+    // --------------------- VALIDATION --------------------------
+
     private boolean validateForm() {
         boolean valid = true;
 
-        valid &= validateName();
-        valid &= validateEmail();
-        valid &= validatePhone();
-
+        valid &= validateName(fullNameField);
+        valid &= validateEmail(emailField);
+        valid &= validatePhone(phoneField);
         valid &= validateField(addressArea);
 
         valid &= validateList(educationContainer);
@@ -143,31 +163,27 @@ public class CVFormController {
         valid &= validateList(experienceContainer);
         valid &= validateList(projectsContainer);
 
-        if (!valid) {
-            new Alert(Alert.AlertType.ERROR, "Invalid input! Please correct the highlighted fields.").show();
-        }
+        if (!valid)
+            new Alert(Alert.AlertType.ERROR, "Please correct highlighted fields.").show();
 
         return valid;
     }
 
-    private boolean validateName() {
-        String text = fullNameField.getText();
-        boolean ok = text.matches("[A-Za-z ]+");
-        fullNameField.setStyle(ok ? "" : "-fx-border-color:red; -fx-border-width:2;");
+    private boolean validateName(TextField field) {
+        boolean ok = field.getText().matches("[a-zA-Z ]+");
+        field.setStyle(ok ? "" : "-fx-border-color:red; -fx-border-width:2;");
         return ok;
     }
 
-    private boolean validateEmail() {
-        String text = emailField.getText();
-        boolean ok = text.contains("@") && text.length() >= 5;
-        emailField.setStyle(ok ? "" : "-fx-border-color:red; -fx-border-width:2;");
+    private boolean validateEmail(TextField field) {
+        boolean ok = field.getText().contains("@") && field.getText().contains(".");
+        field.setStyle(ok ? "" : "-fx-border-color:red; -fx-border-width:2;");
         return ok;
     }
 
-    private boolean validatePhone() {
-        String text = phoneField.getText();
-        boolean ok = text.matches("[0-9]+");
-        phoneField.setStyle(ok ? "" : "-fx-border-color:red; -fx-border-width:2;");
+    private boolean validatePhone(TextField field) {
+        boolean ok = field.getText().matches("[0-9]+");
+        field.setStyle(ok ? "" : "-fx-border-color:red; -fx-border-width:2;");
         return ok;
     }
 
@@ -188,16 +204,18 @@ public class CVFormController {
                 allOk &= ok;
             }
         }
-
         return allOk;
     }
+
+    // --------------------- SAVE + PREVIEW ----------------------
 
     @FXML
     private void generateCV() {
         try {
             if (!validateForm()) return;
 
-            CV cv = new CV();
+            CV cv = (currentCV == null) ? new CV() : currentCV;
+
             cv.setFullName(fullNameField.getText());
             cv.setEmail(emailField.getText());
             cv.setPhone(phoneField.getText());
@@ -209,8 +227,12 @@ public class CVFormController {
             collect(experienceContainer, cv.getExperiences());
             collect(projectsContainer, cv.getProjects());
 
-            Alert success = new Alert(Alert.AlertType.INFORMATION, "Saved Successfully!");
-            success.show();
+            if (cv.getId() == 0)
+                cvDao.insert(cv);
+            else
+                cvDao.update(cv);
+
+            new Alert(Alert.AlertType.INFORMATION, "CV saved successfully!").show();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/Preview.fxml"));
             Scene scene = new Scene(loader.load());
@@ -228,8 +250,8 @@ public class CVFormController {
 
     private void collect(VBox box, java.util.List<String> list) {
         list.clear();
-        for (Node node : box.getChildren()) {
-            if (node instanceof HBox row) {
+        for (Node n : box.getChildren()) {
+            if (n instanceof HBox row) {
                 Node input = row.getChildren().get(0);
                 if (input instanceof TextField tf && !tf.getText().isBlank()) list.add(tf.getText());
                 if (input instanceof TextArea ta && !ta.getText().isBlank()) list.add(ta.getText());
