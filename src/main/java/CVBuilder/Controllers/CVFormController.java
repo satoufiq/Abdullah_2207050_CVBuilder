@@ -1,15 +1,15 @@
 package CVBuilder.Controllers;
 
+import CVBuilder.concurrent.AppExecutors;
 import CVBuilder.db.CVDao;
 import CVBuilder.db.CVRepository;
 import CVBuilder.db.JsonRepository;
 import CVBuilder.models.CV;
-
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,6 +19,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.concurrent.Semaphore;
 
 public class CVFormController {
 
@@ -40,6 +41,9 @@ public class CVFormController {
     private CV currentCV = null;
 
     private final CVDao cvDao = new CVDao();
+
+    // Semaphore to prevent concurrent saves
+    private static final Semaphore SAVE_LOCK = new Semaphore(1);
 
     @FXML
     public void initialize() {
@@ -86,8 +90,7 @@ public class CVFormController {
     }
 
     private HBox entry(String text, boolean large, String prompt) {
-
-        TextInputControl input = large ? new TextArea() : new TextField();
+        javafx.scene.control.TextInputControl input = large ? new TextArea() : new TextField();
         input.setPrefWidth(420);
 
         if (text == null || text.isBlank())
@@ -179,7 +182,7 @@ public class CVFormController {
         return ok;
     }
 
-    private boolean validateField(TextInputControl field) {
+    private boolean validateField(javafx.scene.control.TextInputControl field) {
         boolean ok = !field.getText().isBlank();
         field.setStyle(ok ? "" : "-fx-border-color:red; -fx-border-width:2;");
         return ok;
@@ -188,9 +191,9 @@ public class CVFormController {
     private boolean validateList(VBox box) {
         boolean valid = true;
 
-        for (Node node : box.getChildren()) {
+        for (javafx.scene.Node node : box.getChildren()) {
             if (node instanceof HBox hbox) {
-                TextInputControl input = (TextInputControl) hbox.getChildren().get(0);
+                javafx.scene.control.TextInputControl input = (javafx.scene.control.TextInputControl) hbox.getChildren().get(0);
                 boolean ok = !input.getText().isBlank();
                 input.setStyle(ok ? "" : "-fx-border-color:red; -fx-border-width:2;");
                 valid &= ok;
@@ -203,6 +206,11 @@ public class CVFormController {
     private void generateCV() {
         try {
             if (!validateForm()) return;
+
+            if (!SAVE_LOCK.tryAcquire()) {
+                new Alert(Alert.AlertType.WARNING, "Save already in progress. Please wait.").show();
+                return;
+            }
 
             CV cv = (currentCV == null) ? new CV() : currentCV;
 
@@ -217,38 +225,56 @@ public class CVFormController {
             collect(experienceContainer, cv.getExperiences());
             collect(projectsContainer, cv.getProjects());
 
-            if (cv.getId() == 0) {
-                cvDao.insert(cv);
-                CVRepository.add(cv);
-            } else {
-                cvDao.update(cv);
-                CVRepository.update(cv);
-            }
+            AppExecutors.DB_EXECUTOR.submit(() -> {
+                try {
+                    if (cv.getId() == 0) {
+                        cvDao.insert(cv);
+                        // update observable repository on UI thread
+                        Platform.runLater(() -> CVRepository.add(cv));
+                    } else {
+                        cvDao.update(cv);
+                        Platform.runLater(() -> CVRepository.update(cv));
+                    }
 
+                    AppExecutors.DB_EXECUTOR.submit(() -> JsonRepository.saveAll(CVRepository.getList()));
 
-            JsonRepository.saveAll(CVRepository.getList());
+                    Platform.runLater(() -> {
+                        try {
+                            new Alert(Alert.AlertType.INFORMATION, "CV saved successfully!").show();
 
-            new Alert(Alert.AlertType.INFORMATION, "CV saved successfully!").show();
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/Preview.fxml"));
+                            Scene scene = new Scene(loader.load());
+                            PreviewController controller = loader.getController();
+                            controller.setCV(cv);
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/Preview.fxml"));
-            Scene scene = new Scene(loader.load());
+                            Stage stage = (Stage) fullNameField.getScene().getWindow();
+                            stage.setScene(scene);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    });
 
-            PreviewController controller = loader.getController();
-            controller.setCV(cv);
-
-            Stage stage = (Stage) fullNameField.getScene().getWindow();
-            stage.setScene(scene);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    Platform.runLater(() ->
+                            new Alert(Alert.AlertType.ERROR, "Save failed: " + ex.getMessage()).show()
+                    );
+                } finally {
+                    SAVE_LOCK.release();
+                }
+            });
 
         } catch (Exception ex) {
             ex.printStackTrace();
+            SAVE_LOCK.release();
         }
     }
 
     private void collect(VBox box, java.util.List<String> list) {
         list.clear();
-        for (Node n : box.getChildren()) {
+        for (javafx.scene.Node n : box.getChildren()) {
             if (n instanceof HBox row) {
-                Node input = row.getChildren().get(0);
+                javafx.scene.Node input = row.getChildren().get(0);
                 if (input instanceof TextField tf && !tf.getText().isBlank()) list.add(tf.getText());
                 if (input instanceof TextArea ta && !ta.getText().isBlank()) list.add(ta.getText());
             }

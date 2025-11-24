@@ -1,10 +1,11 @@
 package CVBuilder.Controllers;
 
+import CVBuilder.concurrent.AppExecutors;
 import CVBuilder.db.CVDao;
 import CVBuilder.db.CVRepository;
 import CVBuilder.db.JsonRepository;
 import CVBuilder.models.CV;
-
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +14,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 public class SavedCVsController {
 
@@ -28,34 +31,40 @@ public class SavedCVsController {
     @FXML
     public void initialize() {
 
-
-        if (CVRepository.getList().isEmpty()) {
-            try {
-                CVRepository.loadAll(dao.findAll());
-
-
-                JsonRepository.saveAll(CVRepository.getList());
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                new Alert(Alert.AlertType.ERROR, "Failed to load CVs: " + e.getMessage()).show();
-            }
-        }
-
-        ObservableList<CV> items = CVRepository.getList();
-
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameCol.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
         phoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
 
-        // ACTION BUTTONS FOR EACH ROW
-        actionsCol.setCellFactory(col -> new TableCell<>() {
+        configureActionButtons();
 
+        ObservableList<CV> items = CVRepository.getList();
+        table.setItems(items);
+
+        AppExecutors.DB_EXECUTOR.submit(() -> {
+            try {
+                List<CV> dbList = dao.findAll();
+
+
+                if (dbList.isEmpty()) {
+                    List<CV> jsonList = JsonRepository.loadAll();
+                    if (!jsonList.isEmpty()) dbList = jsonList;
+                }
+
+                List<CV> finalList = dbList;
+                Platform.runLater(() -> CVRepository.loadAll(finalList));
+            } catch (Exception e) {
+                e.printStackTrace();
+                Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Failed to load CVs: " + e.getMessage()).show());
+            }
+        });
+    }
+
+    private void configureActionButtons() {
+        actionsCol.setCellFactory(col -> new TableCell<>() {
             private final Button viewBtn = new Button("View");
             private final Button editBtn = new Button("Edit");
             private final Button delBtn = new Button("Delete");
-
             private final HBox box = new HBox(8, viewBtn, editBtn, delBtn);
 
             {
@@ -82,8 +91,9 @@ public class SavedCVsController {
             }
 
             private CV getCurrent() {
-                return getIndex() >= 0 && getIndex() < getTableView().getItems().size()
-                        ? getTableView().getItems().get(getIndex())
+                int idx = getIndex();
+                return idx >= 0 && idx < getTableView().getItems().size()
+                        ? getTableView().getItems().get(idx)
                         : null;
             }
 
@@ -93,8 +103,6 @@ public class SavedCVsController {
                 setGraphic(empty ? null : box);
             }
         });
-
-        table.setItems(items);
     }
 
     @FXML
@@ -112,10 +120,8 @@ public class SavedCVsController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/Preview.fxml"));
             Scene scene = new Scene(loader.load());
-
             PreviewController ctrl = loader.getController();
             ctrl.setCV(cv);
-
             Stage stage = (Stage) table.getScene().getWindow();
             stage.setScene(scene);
         } catch (Exception e) { e.printStackTrace(); }
@@ -126,10 +132,8 @@ public class SavedCVsController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CVBuilder/CVForm.fxml"));
             Scene scene = new Scene(loader.load());
-
             CVFormController ctrl = loader.getController();
             ctrl.loadCV(cv);
-
             Stage stage = (Stage) table.getScene().getWindow();
             stage.setScene(scene);
         } catch (Exception e) { e.printStackTrace(); }
@@ -137,25 +141,26 @@ public class SavedCVsController {
 
     private void deleteCV(CV cv) {
         if (cv == null) return;
-
         Alert a = new Alert(Alert.AlertType.CONFIRMATION,
                 "Delete CV for " + cv.getFullName() + "?",
                 ButtonType.YES, ButtonType.NO);
-
         a.setTitle("Confirm Delete");
-
         a.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.YES) {
-                try {
-                    dao.delete(cv.getId());
-                    CVRepository.remove(cv.getId());
+                AppExecutors.DB_EXECUTOR.submit(() -> {
+                    try {
+                        dao.delete(cv.getId());
 
+                        javafx.application.Platform.runLater(() -> CVRepository.remove(cv.getId()));
 
-                    JsonRepository.saveAll(CVRepository.getList());
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                        JsonRepository.saveAll(CVRepository.getList());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        javafx.application.Platform.runLater(() ->
+                                new Alert(Alert.AlertType.ERROR, "Delete failed: " + e.getMessage()).show()
+                        );
+                    }
+                });
             }
         });
     }
